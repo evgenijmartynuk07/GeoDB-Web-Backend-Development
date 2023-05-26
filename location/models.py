@@ -6,5 +6,8 @@ class Place(models.Model):
     description = models.TextField()
     geom = models.PointField()
 
+    class Meta:
+        db_table = "places"
+
     def __str__(self):
         return self.name
