@@ -24,8 +24,10 @@ create .env based on .env.sample
 docker-compose up
 ```
 
+## Use the Swagger interface
+
+Swagger: An API documentation and design tool for building APIs.
+
 ```shell
-1. register new user -> api/user/register/
-2. get token -> api/user/token/
-3. test project -> api/doc/swagger/
+test project -> {host}:{port}/api/doc/swagger/
 ```
