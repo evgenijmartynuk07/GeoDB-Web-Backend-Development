@@ -15,9 +15,17 @@ All API requests return responses in JSON format. You have created documentation
 
 Python3 must be already installed
 
+The project needs to be launched directly in Docker, and all configurations will be automatically generated.
+
 ```shell
 git https://github.com/evgenijmartynuk07/GeoDB-Web-Backend-Development.git
 cd GeoDB_Web_Backend_Development
 create .env based on .env.sample
 docker-compose up
+```
+
+```shell
+1. register new user -> api/user/register/
+2. get token -> api/user/token/
+3. test project -> api/doc/swagger/
 ```
