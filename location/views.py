@@ -45,7 +45,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs) -> Response:
         """
         Here you can view a list of all coordinates available in the database.
-        Using the provided coordinates, you can filter the points based on proximity.
+        Using the provided coordinates,
+        you can filter the points based on proximity.
         """
         latitude = request.query_params.get("latitude")
         longitude = request.query_params.get("longitude")
@@ -62,10 +63,13 @@ class PlaceViewSet(viewsets.ModelViewSet):
                 ).order_by("distance").first()
             except ValueError:
                 raise ValidationError(
+                    "Latitude and longitude must be valid float-point numbers."
+                )
 
-                    "Latitude and longitude must be valid floating-point numbers.")
-
-        serializer = self.get_serializer(queryset, many=not isinstance(queryset, Place))
+        serializer = self.get_serializer(
+            queryset,
+            many=not isinstance(queryset, Place)
+        )
 
         return Response(serializer.data)
 
