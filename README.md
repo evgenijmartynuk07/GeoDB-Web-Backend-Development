@@ -30,4 +30,7 @@ Swagger: An API documentation and design tool for building APIs.
 
 ```shell
 test project -> {host}:{port}/api/doc/swagger/
+- register new user
+- generete token
+- authorize
 ```
