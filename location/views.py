@@ -1,9 +1,12 @@
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.measure import D
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema, OpenApiParameter
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+
 from .models import Place
 from .serializers import PlaceSerializer
 
@@ -16,7 +19,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
     @extend_schema(
         methods=["POST"],
         summary="Create a new place",
-        description="This endpoint creates a new place. (name, description, geom(POINT)",
+        description="This endpoint creates a new place. "
+                    "(name, description, geom(POINT)",
     )
     def create(self, request, *args, **kwargs):
         return super().create(request, *args, **kwargs)
@@ -27,30 +31,42 @@ class PlaceViewSet(viewsets.ModelViewSet):
             OpenApiParameter(
                 "latitude",
                 type=str,
-                description="Specify the latitude parameters in the format like 1.000 (floating-point number)",
+                description="Specify the latitude parameters "
+                            "in the format like 1.000 (floating-point number)",
             ),
             OpenApiParameter(
                 "longitude",
                 type=str,
-                description="Specify the longitude parameters in the format like 1.000 (floating-point number)",
+                description="Specify the longitude parameters "
+                            "in the format like 1.000 (floating-point number)",
             ),
         ]
     )
     def list(self, request, *args, **kwargs) -> Response:
         """
         Here you can view a list of all coordinates available in the database.
-        Using the provided coordinates, you will be able to find the nearest point.
+        Using the provided coordinates, you can filter the points based on proximity.
         """
-        latitude = float(request.query_params.get("latitude"))
-        longitude = float(request.query_params.get("longitude"))
+        latitude = request.query_params.get("latitude")
+        longitude = request.query_params.get("longitude")
 
-        point = Point(longitude, latitude, srid=4326)
+        queryset = Place.objects.all()
 
-        nearest_place = Place.objects.annotate(
-            distance=Distance("geom", point)
-        ).order_by('distance').first()
+        if latitude is not None and longitude is not None:
+            try:
+                latitude = float(latitude)
+                longitude = float(longitude)
+                point = Point(longitude, latitude, srid=4326)
+                queryset = queryset.annotate(
+                    distance=Distance("geom", point)
+                ).order_by("distance").first()
+            except ValueError:
+                raise ValidationError(
 
-        serializer = self.get_serializer(nearest_place)
+                    "Latitude and longitude must be valid floating-point numbers.")
+
+        serializer = self.get_serializer(queryset, many=not isinstance(queryset, Place))
+
         return Response(serializer.data)
 
     @extend_schema(
@@ -64,17 +80,17 @@ class PlaceViewSet(viewsets.ModelViewSet):
     @extend_schema(
         methods=["PUT"],
         summary="Update a place",
-        description="This endpoint update a specific place. (name = string, description = text, geom = POINT(1.000, 1.000).",
+        description="This endpoint update a specific place. "
+                    "(name = string, description = text, "
+                    "geom = POINT(1.000, 1.000).",
     )
     def update(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
 
     @extend_schema(
-        methods=['DELETE'],
+        methods=["DELETE"],
         summary="Delete a place",
         description="This endpoint deletes a specific place by ID.",
     )
     def destroy(self, request, *args, **kwargs):
         return super().destroy(request, *args, **kwargs)
-
-
