@@ -10,3 +10,14 @@ A web application for processing geospatial data and interacting with databases 
 * Find Nearest Place to a Given Point: The application provides the ability to find the nearest place to a specified point by passing the coordinates as query parameters.
 
 All API requests return responses in JSON format. You have created documentation for the API, explaining how to use each endpoint and describing the request parameters and response format.
+
+## Installation
+
+Python3 must be already installed
+
+```shell
+git https://github.com/evgenijmartynuk07/GeoDB-Web-Backend-Development.git
+cd GeoDB_Web_Backend_Development
+create .env based on .env.sample
+docker-compose up
+```
