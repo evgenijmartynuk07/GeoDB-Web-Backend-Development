@@ -1,6 +1,5 @@
 from django.contrib.gis.geos import Point
 from django.contrib.gis.db.models.functions import Distance
-from django.contrib.gis.measure import D
 from rest_framework import viewsets
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework.exceptions import ValidationError
