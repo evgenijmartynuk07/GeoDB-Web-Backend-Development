@@ -59,7 +59,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
                 point = Point(longitude, latitude, srid=4326)
                 queryset = queryset.annotate(
                     distance=Distance("geom", point)
-                ).order_by("distance").first()
+                ).order_by("distance")[:1]
             except ValueError:
                 raise ValidationError(
                     "Latitude and longitude must be valid float-point numbers."
@@ -67,7 +67,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(
             queryset,
-            many=not isinstance(queryset, Place)
+            many=True
         )
 
         return Response(serializer.data)
