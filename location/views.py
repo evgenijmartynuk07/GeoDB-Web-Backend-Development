@@ -50,7 +50,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
         latitude = request.query_params.get("latitude")
         longitude = request.query_params.get("longitude")
 
-        queryset = Place.objects.all()
+        queryset = self.get_queryset()
 
         if latitude is not None and longitude is not None:
             try:
